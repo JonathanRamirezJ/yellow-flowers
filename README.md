@@ -1,76 +1,81 @@
 # Flores amarillas
 
-Web app responsive (React + Vite) que muestra pensamientos cortos sobre fondo
-negro, mientras flores amarillas van floreciendo alrededor a medida que bajas
-con el scroll.
+A responsive web app (React + Vite) that shows short thoughts on a dark
+background while yellow flowers bloom around them as you scroll down.
 
-## Desarrollo
+## Development
 
 ```bash
 npm install
-npm run dev      # servidor local
-npm run build    # build de producción en dist/
+npm run dev      # local server
+npm run build    # production build in dist/
 npm run lint     # oxlint
 ```
 
-## Agregar pensamientos
+## Adding thoughts
 
-Todo el contenido vive en [`src/data/thoughts.json`](src/data/thoughts.json).
-La página se arma sola a partir de ese archivo: agregar un objeto al arreglo
-`thoughts` crea una sección nueva, con su animación de entrada y su propio
-grupo de flores.
+All the content lives in [`src/data/thoughts.json`](src/data/thoughts.json).
+The page builds itself from that file: adding an object to the `thoughts`
+array creates a new section, with its own entrance animation and its own
+group of flowers.
 
 ```json
 {
   "title": "Flores amarillas",
   "subtitle": "Un jardín de pensamientos que florecen al bajar",
+  "dedication": "Con amor y cariño para Sandy mi prometida",
   "thoughts": [
-    { "id": "1", "text": "Un pensamiento de máximo 500 caracteres." },
-    { "id": "4", "text": "Otro más, y la sección aparece sola." }
+    { "id": "1", "text": "A thought, 500 characters max." },
+    { "id": "4", "text": "Another one, and the section shows up on its own." }
   ]
 }
 ```
 
-- `id`: identificador único y estable (también define la semilla del jardín de
-  esa sección, así que cada pensamiento tiene siempre las mismas flores).
-- `text`: máximo **500 caracteres**. Si se pasa, aparece un aviso en la consola
-  durante el desarrollo (`src/lib/thoughts.js`).
+- `title`, `subtitle`, `dedication`: the three lines of the cover. Leave
+  `dedication` out (or empty) and it simply isn't rendered.
+- `id`: unique, stable identifier. It also seeds that section's garden, so a
+  thought always gets the same flowers.
+- `text`: **500 characters max**. Going over logs a warning in the console
+  during development (`src/lib/thoughts.js`).
 
-No hay límite de pensamientos: la numeración (`01`, `02`, …) se calcula sola.
+There is no limit on how many thoughts you add — the numbering (`01`, `02`, …)
+is computed automatically.
 
-## Cómo está armado
+## How it's put together
 
 ```
 src/
-  data/thoughts.json      contenido editable
-  lib/thoughts.js         normaliza el JSON y valida el largo
-  lib/garden.js           reparte las flores por sección (layouts sides/crown/ground)
-  lib/random.js           PRNG con semilla: el jardín no salta entre renders
-  components/flowerShapes.jsx  los trazos SVG de los 4 tipos de flor
-  components/Flower.jsx   una flor suelta + su animación de crecer
-  components/FlowerField.jsx  capa decorativa de flores de una sección
-  components/Reveal.jsx   aparición compartida de los textos
-  components/Bouquet.jsx  el ramo de las 4 flores de la portada
-  components/Hero.jsx     portada con el título palabra por palabra
-  components/Thought.jsx  una sección de pensamiento
+  data/thoughts.json           editable content
+  lib/thoughts.js              normalizes the JSON and checks the length
+  lib/garden.js                lays the flowers out per section (sides/crown/ground)
+  lib/random.js                seeded PRNG, so the garden doesn't jump between renders
+  components/flowerShapes.jsx  the SVG strokes of the 4 flower types
+  components/Flower.jsx        a single flower and its growing animation
+  components/FlowerField.jsx   a section's decorative flower layer
+  components/Reveal.jsx        the shared entrance animation for text
+  components/Bouquet.jsx       the 4-flower bouquet on the cover
+  components/Hero.jsx          cover, with the title arriving word by word
+  components/Thought.jsx       one thought section
 ```
 
-### Detalles
+### Details
 
-- **Animaciones**: [`motion`](https://motion.dev) (Framer Motion). Los textos y
-  las flores entran con `whileInView`, una sola vez, al acercarse al viewport.
-  El tallo se dibuja animando `pathLength` y la corola crece con un `spring`.
-- **Los 4 tipos de flor** (`daisy`, `poppy`, `tulip`, `pompon`) se eligen al
-  azar, igual que tamaño, rotación, balanceo y retardo. En la portada aparecen
-  los cuatro juntos, atados como ramo, sobre el título.
-- **El cierre** usa el layout `ground` en tres filas (atrás más chicas y
-  tenues, adelante más grandes) para que se lea como un campo florido.
-- **Responsive**: las flores se posicionan en porcentajes y se reducen en
-  pantallas chicas (`useCompactViewport`) para no estorbar la lectura.
-- **Accesibilidad**: las flores son decorativas (`aria-hidden`) y todo el
-  movimiento se desactiva si el sistema pide `prefers-reduced-motion`.
+- **Animation**: [`motion`](https://motion.dev) (Framer Motion). Text and
+  flowers come in with `whileInView`, once, as they approach the viewport.
+  Stems are drawn by animating `pathLength` and the blossom pops with a
+  `spring`.
+- **The 4 flower types** (`daisy`, `poppy`, `tulip`, `pompon`) are picked at
+  random, along with size, rotation, sway and delay. On the cover all four
+  appear together, tied as a bouquet above the title.
+- **The closing section** uses the `ground` layout in three rows — smaller and
+  dimmer at the back, larger up front — so it reads as a field in bloom.
+- **Responsive**: flowers are positioned in percentages and scale down on
+  small screens (`useCompactViewport`) so they never get in the way of the
+  text.
+- **Accessibility**: flowers are decorative (`aria-hidden`) and every bit of
+  motion is turned off when the system asks for `prefers-reduced-motion`.
 
-### Cambiar la paleta
+### Changing the palette
 
-Las variables están en `src/index.css` (`--petal`, `--petal-edge`,
+The variables live in `src/index.css` (`--petal`, `--petal-edge`,
 `--petal-core`, `--stem`, `--bg`, `--ink`).
