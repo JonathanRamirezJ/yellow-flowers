@@ -1,4 +1,4 @@
-# Flores amarillas
+# Yellow Flowers
 
 A responsive web app (React + Vite) that shows short thoughts on a dark
 background while yellow flowers bloom around them as you scroll down.
